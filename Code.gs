@@ -5,20 +5,6 @@ function clearCell(){ // this function clears cell A2 before appending it with f
   activeSheet.getRange("A2:B2").clearContent();
 }
 
-function sumOfAllSales() {
-  
-  var app = SpreadsheetApp;
-  
-  var activeSheet = app.getActiveSpreadsheet().getSheetByName("Form Responses"); // selects spreadsheet 'Form Responses' by name
-  
-  var sum =  activeSheet.getRange("H2").getValue();// selects value of sales total from form responses
-  
-  var targetSheet = app.getActiveSpreadsheet().getSheetByName("Sales report"); // selects 'Sales report' as active sheet
-
-  targetSheet.getRange("A2").setValue(sum); // appends value of sales total to new sheet in cell A2
-  
-}
-
 function differenceOfSales(){
   var app = SpreadsheetApp;
   
@@ -87,7 +73,7 @@ sheets.forEach(function(s) {s.showSheet();})
 }
 
 
-/*function sendMail() {
+/*function sendMail() { // this code segment was our old 
 
   var originalSpreadsheet = SpreadsheetApp.getActive();  // Gets the current spreadsheet
   var now = new Date(); // Time stamp information for the email
@@ -95,7 +81,7 @@ sheets.forEach(function(s) {s.showSheet();})
                     "Sales report",
                     "Daily sales report for day of " + now,
                     {attachments:[originalSpreadsheet]}); //attachment field; sending out google spreadsheet
-}*/
+}*/ 
 
 function calcDay(){
   
@@ -108,14 +94,11 @@ function calcDay(){
   var yyyy = today.getFullYear();
   var daily_total = 0;
   
-  var today2 = new Date().toDateString();
+  // var today2 = new Date().toDateString(); <------ This was a test value
   
   var Avals = activeSheet.getRange("A1:A").getValues();
   var Alast = Avals.filter(String).length; // finds the length of column A
-  
-  var Timestamp = activeSheet.getRange('A1:A')
-  
-  
+
   if(dd<10) {
     dd = '0'+dd
   } 
@@ -124,24 +107,24 @@ function calcDay(){
     mm = '0'+mm
   } 
 
-  today = mm + '/' + dd + '/' + yyyy;
+  today = mm + '/' + dd + '/' + yyyy; // sets date to  mm/dd/yyyy format
+  today.toString();
   
   var daily_sales = 0;
   for (var i = 1; i < Alast; i = i+1){ 
-    if (activeSheet.getRange(i,1).getValues().indexOf(today) > -1){
-      
-        var cell = activeSheet.getRange(i,1).offset(0,3).getValues();
-        daily_total += cell;
-
+    if (activeSheet.getRange(i,1).getValues().indexOf(today) > -1){   // loop compares today as a mm/dd/yyyy format string, to the value of the cell being checked
+        var cell = activeSheet.getRange(i,1).offset(0,3).getValues(); // if the cell contains the current day, the cell reads the value in column C of the same row, and adds it 
+        daily_total += cell;                                          // to a counter daily_total to find the total value of that day.
     } 
   }
   
   var targetSheet = app.getActiveSpreadsheet().getSheetByName("Sales report"); // selects 'Sales report' as active sheet
-  targetSheet.getRange("A2").setValue(daily_total); // appends value of sales total to new sheet in cell A2
+  targetSheet.getRange("A2").setValue(daily_total); // appends value of daily_total to new sheet in cell A2
   
- var testCell = activeSheet.getRange(36,1).getValues().toString();
  /* 
- Logger.log(today); 
+ var testCell = activeSheet.getRange(36,1).getValues().toString();
+ 
+ Logger.log(today);  <------------ All of these are log test values.
  Logger.log(Alast);
  Logger.log(testCell);
  Logger.log(daily_total);
